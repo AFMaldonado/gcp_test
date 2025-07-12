@@ -22,6 +22,12 @@ variable "entry_point" {
   default     = "main"
 }
 
+variable "temp_bucket" {
+  description = "Bucket temporal"
+  type        = string
+  default     = "gcf_source"
+}
+
 variable "trigger_bucket" {
   description = "Bucket que activa la función al subir un archivo"
   type        = string

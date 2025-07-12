@@ -12,13 +12,8 @@ provider "google" {
   region  = var.region
 }
 
-# Crear un bucket temporal para subir el código fuente
-resource "random_id" "bucket_prefix" {
-  byte_length = 4
-}
-
 resource "google_storage_bucket" "function_bucket" {
-  name     = "${random_id.bucket_prefix.hex}-gcf-source"
+  name     = var.temp_bucket
   location = var.region
   force_destroy = true
   uniform_bucket_level_access = true
