@@ -82,3 +82,4 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     }
   }
 }
+
