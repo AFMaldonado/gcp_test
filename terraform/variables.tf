@@ -25,7 +25,7 @@ variable "entry_point" {
 variable "temp_bucket_gcf" {
   description = "Bucket temporal"
   type        = string
-  default     = "gcf_source"
+  default     = "gcf_source_test_de_12"
 }
 
 variable "trigger_bucket" {
