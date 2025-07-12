@@ -12,15 +12,15 @@ provider "google" {
   region  = var.region
 }
 
-# Crear un bucket temporal para subir el código fuente
+# Bucket temporal para subir el ZIP 
 resource "random_id" "bucket_prefix" {
   byte_length = 4
 }
 
 resource "google_storage_bucket" "function_bucket" {
-  name     = "${random_id.bucket_prefix.hex}-gcf-source"
-  location = var.region
-  force_destroy = true
+  name                        = "${random_id.bucket_prefix.hex}-gcf-source"
+  location                    = var.region
+  force_destroy               = true
   uniform_bucket_level_access = true
 
   lifecycle {
@@ -28,21 +28,21 @@ resource "google_storage_bucket" "function_bucket" {
   }
 }
 
-# Crear archivo ZIP desde la carpeta src/
+# Crear ZIP localmente
 data "archive_file" "function_zip" {
   type        = "zip"
   source_dir  = "../src"
   output_path = "../function-source.zip"
 }
 
-# Subir el ZIP al bucket
+# Subir el ZIP 
 resource "google_storage_bucket_object" "function_source" {
   name   = "function-source.zip"
   bucket = google_storage_bucket.function_bucket.name
   source = data.archive_file.function_zip.output_path
 }
 
-# Crear la Cloud Function v2
+# Cloud Function desacoplada: bucket y object como variables
 resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
   name     = var.function_name
   location = var.region
@@ -54,8 +54,8 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 
     source {
       storage_source {
-        bucket = google_storage_bucket.function_bucket.name
-        object = google_storage_bucket_object.function_source.name
+        bucket = var.function_source_bucket   # 👈 Variable
+        object = var.function_source_object   # 👈 Variable
       }
     }
 

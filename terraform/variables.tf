@@ -51,3 +51,17 @@ variable "service_account_email" {
   type        = string
   default     = "199083437557-compute@developer.gserviceaccount.com"
 }
+
+# ✅ Nuevas variables para desacoplar la Cloud Function del bucket temporal
+
+variable "function_source_bucket" {
+  description = "Nombre del bucket donde está el código fuente ZIP de la función"
+  type        = string
+  default     = "my-temp-bucket-gcf" # 👈 Cámbialo al bucket real que usas para subir el ZIP
+}
+
+variable "function_source_object" {
+  description = "Nombre del archivo ZIP subido al bucket"
+  type        = string
+  default     = "function-source.zip" # 👈 Asegúrate que coincida con el nombre que subas
+}
