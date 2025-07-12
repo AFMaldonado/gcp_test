@@ -41,7 +41,3 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-
-      - name: Destroy function ZIP bucket
-        run: terraform destroy -auto-approve -target=google_storage_bucket.function_bucket
-        if: always()
