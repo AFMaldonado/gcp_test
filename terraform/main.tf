@@ -53,18 +53,18 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
         object = google_storage_bucket_object.function_source.name
       }
     }
-
-    environment_variables = {
-      BQ_PROJECT = var.bq_project
-      BQ_DATASET = var.bq_dataset
-      BQ_TABLE   = var.bq_table
-    }
   }
 
   service_config {
     available_memory       = "512M"
     timeout_seconds        = 60
     service_account_email  = var.service_account_email
+
+    environment_variables = {
+      BQ_PROJECT = var.bq_project
+      BQ_DATASET = var.bq_dataset
+      BQ_TABLE   = var.bq_table
+    }
   }
 
   event_trigger {
