@@ -51,16 +51,3 @@ variable "service_account_email" {
   type        = string
   default     = "199083437557-compute@developer.gserviceaccount.com"
 }
-
-variable "function_source_bucket" {
-  description = "Nombre del bucket donde está el código fuente ZIP de la función"
-  type        = string
-  default     = ""  # Lo vamos a sobreescribir en main.tf usando locals o directamente como referencia
-}
-
-variable "function_source_object" {
-  description = "Nombre del archivo ZIP subido al bucket"
-  type        = string
-  default     = "function-source.zip"
-}
-
