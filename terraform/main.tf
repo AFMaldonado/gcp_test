@@ -12,11 +12,16 @@ provider "google" {
   region  = var.region
 }
 
-# Bucket temporal para subir el ZIP 
+# --------------------------
+# 1. Generar nombre aleatorio para el bucket temporal
+# --------------------------
 resource "random_id" "bucket_prefix" {
   byte_length = 4
 }
 
+# --------------------------
+# 2. Crear bucket temporal
+# --------------------------
 resource "google_storage_bucket" "function_bucket" {
   name                        = "${random_id.bucket_prefix.hex}-gcf-source"
   location                    = var.region
@@ -28,21 +33,35 @@ resource "google_storage_bucket" "function_bucket" {
   }
 }
 
-# Crear ZIP localmente
+# --------------------------
+# 3. Crear ZIP desde carpeta src/
+# --------------------------
 data "archive_file" "function_zip" {
   type        = "zip"
   source_dir  = "../src"
   output_path = "../function-source.zip"
 }
 
-# Subir el ZIP 
+# --------------------------
+# 4. Subir ZIP al bucket temporal
+# --------------------------
 resource "google_storage_bucket_object" "function_source" {
   name   = "function-source.zip"
   bucket = google_storage_bucket.function_bucket.name
   source = data.archive_file.function_zip.output_path
 }
 
-# Cloud Function desacoplada: bucket y object como variables
+# --------------------------
+# 5. Variables locales para desacoplar función del bucket
+# --------------------------
+locals {
+  function_source_bucket = google_storage_bucket.function_bucket.name
+  function_source_object = google_storage_bucket_object.function_source.name
+}
+
+# --------------------------
+# 6. Crear Cloud Function desacoplada del bucket
+# --------------------------
 resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
   name     = var.function_name
   location = var.region
@@ -54,8 +73,8 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 
     source {
       storage_source {
-        bucket = var.function_source_bucket   # 👈 Variable
-        object = var.function_source_object   # 👈 Variable
+        bucket = local.function_source_bucket
+        object = local.function_source_object
       }
     }
 
@@ -67,9 +86,9 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
   }
 
   service_config {
-    available_memory       = "256M"
-    timeout_seconds        = 60
-    service_account_email  = var.service_account_email
+    available_memory      = "256M"
+    timeout_seconds       = 60
+    service_account_email = var.service_account_email
   }
 
   event_trigger {
@@ -82,4 +101,3 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
     }
   }
 }
-
