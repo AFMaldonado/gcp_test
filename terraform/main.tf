@@ -67,7 +67,7 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
   }
 
   service_config {
-    available_memory       = "256M"
+    available_memory       = "512M"
     timeout_seconds        = 60
     service_account_email  = var.service_account_email
   }
