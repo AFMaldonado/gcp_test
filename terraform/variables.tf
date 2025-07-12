@@ -22,7 +22,7 @@ variable "entry_point" {
   default     = "main"
 }
 
-variable "temp_bucket" {
+variable "temp_bucket_gcf" {
   description = "Bucket temporal"
   type        = string
   default     = "gcf_source"

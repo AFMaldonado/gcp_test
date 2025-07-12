@@ -13,7 +13,7 @@ provider "google" {
 }
 
 resource "google_storage_bucket" "function_bucket" {
-  name     = var.temp_bucket
+  name     = var.temp_bucket_gcf
   location = var.region
   force_destroy = true
   uniform_bucket_level_access = true
