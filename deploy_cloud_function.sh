@@ -1,0 +1,1 @@
+gcloud functions deploy gcs_to_bigquery --runtime python310 --region=us-east1 --trigger-event google.storage.object.finalize --trigger-resource datalake-de-test --entry-point main --set-env-vars BQ_PROJECT=test-de-465616,BQ_DATASET=raw_data,BQ_TABLE=example_table --service-account=199083437557-compute@developer.gserviceaccount.com
