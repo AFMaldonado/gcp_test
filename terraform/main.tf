@@ -12,56 +12,17 @@ provider "google" {
   region  = var.region
 }
 
-# --------------------------
-# 1. Generar nombre aleatorio para el bucket temporal
-# --------------------------
-resource "random_id" "bucket_prefix" {
-  byte_length = 4
+# Referencia al bucket y objeto ZIP ya existente
+data "google_storage_bucket" "function_bucket" {
+  name = var.function_source_bucket
 }
 
-# --------------------------
-# 2. Crear bucket temporal
-# --------------------------
-resource "google_storage_bucket" "function_bucket" {
-  name                        = "${random_id.bucket_prefix.hex}-gcf-source"
-  location                    = var.region
-  force_destroy               = true
-  uniform_bucket_level_access = true
-
-  lifecycle {
-    prevent_destroy = false
-  }
+data "google_storage_bucket_object" "function_source" {
+  name   = var.function_source_object
+  bucket = data.google_storage_bucket.function_bucket.name
 }
 
-# --------------------------
-# 3. Crear ZIP desde carpeta src/
-# --------------------------
-data "archive_file" "function_zip" {
-  type        = "zip"
-  source_dir  = "../src"
-  output_path = "../function-source.zip"
-}
-
-# --------------------------
-# 4. Subir ZIP al bucket temporal
-# --------------------------
-resource "google_storage_bucket_object" "function_source" {
-  name   = "function-source.zip"
-  bucket = google_storage_bucket.function_bucket.name
-  source = data.archive_file.function_zip.output_path
-}
-
-# --------------------------
-# 5. Variables locales para desacoplar función del bucket
-# --------------------------
-locals {
-  function_source_bucket = google_storage_bucket.function_bucket.name
-  function_source_object = google_storage_bucket_object.function_source.name
-}
-
-# --------------------------
-# 6. Crear Cloud Function desacoplada del bucket
-# --------------------------
+# Crear la Cloud Function desacoplada del bucket
 resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
   name     = var.function_name
   location = var.region
@@ -73,8 +34,8 @@ resource "google_cloudfunctions2_function" "gcs_to_bigquery" {
 
     source {
       storage_source {
-        bucket = local.function_source_bucket
-        object = local.function_source_object
+        bucket = data.google_storage_bucket.function_bucket.name
+        object = data.google_storage_bucket_object.function_source.name
       }
     }
 
