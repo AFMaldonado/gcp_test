@@ -2,6 +2,8 @@ name: Deploy to Google Cloud Functions
 
 on:
   push:
+    paths:
+      - 'cloud_function/.'
     branches:
       - main  # O la rama que prefieras
 
