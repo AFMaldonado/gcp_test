@@ -23,7 +23,7 @@ jobs:
       - name: Install gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
-          project_id: test-de-465616
+          project_id: '${{ secrets.PROJECT_ID }}'
 
       - name: Copy DAG to Cloud Storage bucket
         run: |

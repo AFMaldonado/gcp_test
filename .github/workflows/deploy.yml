@@ -32,7 +32,7 @@ jobs:
 
       - name: Set Google Cloud project
         run: |
-          gcloud config set project test-de-465616
+          gcloud config set project '${{ secrets.PROJECT_ID }}'
           gcloud config set functions/region us-east1
 
       - name: Terraform Init
