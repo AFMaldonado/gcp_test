@@ -3,7 +3,6 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
 from datetime import datetime
 
-
 PROJECT_ID = 'test-de-465616'
 DATASET_ORIGEN = 'raw_data'
 DATASET_DESTINO = 'processed_data'
