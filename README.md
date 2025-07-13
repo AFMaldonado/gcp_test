@@ -110,7 +110,7 @@ Componentes
 •	Cloud Logging + BigQuery: para trazabilidad.
 ________________________________________
 Diagrama
- <img width="726" height="397" alt="image" src="https://github.com/user-attachments/assets/b5517a61-055f-406f-908c-8a386f50dbca" />
+En archivo diagrama.png
 
 ________________________________________
 d. Justificación de la arquitectura
