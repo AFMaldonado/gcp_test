@@ -9,24 +9,17 @@ Define una arquitectura orientada a eventos, en donde al recibir un archivo en u
 **Descripción de la solución:**  
 - Se utiliza **Cloud Storage** como punto de entrada (evento: carga de archivo).
 - La carga de un archivo en el bucket dispara una **Cloud Function** (`cloud_function/main.py`).
-- La función procesa el archivo según la lógica deseada (por ejemplo, lectura, validación, limpieza, etc.).
+- La función procesa el archivo según la lógica deseada.
 
 **Diagrama conceptual:**
 Usuario o sistema externo
 │
-▼
 Subida de archivo
 a Bucket
 │
-▼
 Cloud Function (trigger: finalize/create)
 │
-▼
 Procesamiento del archivo
-
-yaml
-Copiar
-Editar
 
 ---
 
@@ -35,16 +28,17 @@ Editar
 Desarrolle un pipeline de GitHub que despliegue una Cloud Function a través de Terraform.
 
 **Descripción de la solución:**  
-- Se utiliza **GitHub Actions** como plataforma de CI/CD (`.github/workflows/deploy.yml`).
+- Se utiliza **GitHub Actions** como plataforma de CI/CD (`.github/workflows/deploy_cloud_function.yml`).
 - El pipeline ejecuta Terraform para desplegar una Cloud Function con el código actualizado.
 
 **Comandos claves del pipeline:**
-```yaml
+
 - name: Terraform Init
   run: terraform init
 
 - name: Terraform Apply
   run: terraform apply -auto-approve
+
 ## 🗃️ **3. DAG de Airflow: carga desde GCS a BigQuery**
 
 Construya un DAG de Airflow que utilice operadores nativos para tomar un archivo desde un bucket e inserte en BigQuery, posteriormente ejecutar una query.
@@ -66,6 +60,8 @@ Pasos del DAG:
 1. Toma archivo desde un bucket (GCS)
 2. Inserta en una tabla de BigQuery
 3. Ejecuta una query analítica sobre esa tabla
+
+Nota: Se utiliza **GitHub Actions** como plataforma de CI/CD (`.github/workflows/deploy-dag.yml`). 
 
 ## 🚀 **4. Arquitectura de Datos**
 
